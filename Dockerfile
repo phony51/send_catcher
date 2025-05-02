@@ -18,3 +18,5 @@ RUN pip install --no-cache-dir --user -r requirements.txt
 COPY . .
 
 USER send-catcher
+
+ENTRYPOINT [ "python3", "main.py" ]
