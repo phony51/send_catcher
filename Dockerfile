@@ -9,6 +9,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY --chown=send-catcher:send-catcher . .
 USER send-catcher
 ENTRYPOINT [ "python3", "main.py" ]
