@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  send-catcher:
+    build: 
+      context: .
+      dockerfile: ./send-catcher.Dockerfile
+
+    restart: unless-stopped
+    volumes:
+      - ./sessions:/app/sessions
+      - ./configuration.json:/app/configuration.json
+      - ./logs:/app/logs
+    tty: true
+    stdin_open: true

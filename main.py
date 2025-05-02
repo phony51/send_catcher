@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from pathlib import Path
 import re
 from config.app import AppConfig, load_config
 from telethon import TelegramClient
@@ -12,20 +13,17 @@ from logger.logger import setup_logger
 
 async def run(app_config: AppConfig):
     setup_logger(app_config.logger)
-    logging.getLogger('telethon.client.updates')
-    logging.info('Logger loaded')
     proxy_client_config = app_config.clients.proxy_client
-
     proxy_client = TelegramClient(
 
-        session=proxy_client_config.session_name,
+        session=Path('sessions', proxy_client_config.session_name),
         api_id=proxy_client_config.api_id,
         api_hash=proxy_client_config.api_hash
     )
 
     catcher_client_config = app_config.clients.catcher_client
     catcher_client = TelegramClient(
-        session=catcher_client_config.session_name,
+        session=Path('sessions', proxy_client_config.session_name),
         api_id=catcher_client_config.api_id,
         api_hash=catcher_client_config.api_hash
     )
