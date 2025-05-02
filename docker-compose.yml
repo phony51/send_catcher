@@ -1,6 +1,8 @@
 services:
   send-catcher:
-    build: .
+    build: 
+      context: .
+      dockerfile: send-catcher.Dockerfile
     restart: unless-stopped
     volumes:
       - ./sessions:/app/sessions
