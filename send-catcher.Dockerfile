@@ -10,6 +10,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod -R 755 /app/logs
-
 ENTRYPOINT [ "python3", "main.py" ]
