@@ -1,0 +1,9 @@
+**/__pycache__/
+**/*.session
+**/*.session-journal
+**/*.log.*
+**/*.log
+.vscode/
+venv/
+tests/
+configuration.json
