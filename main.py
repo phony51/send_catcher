@@ -10,10 +10,6 @@ from core.executors.auth import AuthExecutor
 from logger.logger import setup_logger
 
 
-async def auth_wrap(client: TelegramClient, phone: str):
-    await client.start(phone, None if await client.is_user_authorized() else print(f'Enter verification code ({phone})'))
-
-
 async def run(app_config: AppConfig):
     setup_logger(app_config.logger)
     logging.getLogger('telethon.client.updates')
