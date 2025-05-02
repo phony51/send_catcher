@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 from pathlib import Path
 import re
 from config.app import AppConfig, load_config
@@ -16,14 +17,14 @@ async def run(app_config: AppConfig):
     proxy_client_config = app_config.clients.proxy_client
     proxy_client = TelegramClient(
 
-        session=Path('./sessions', proxy_client_config.session_name),
+        session=os.path.abspath(Path('sessions', proxy_client_config.session_name)),
         api_id=proxy_client_config.api_id,
         api_hash=proxy_client_config.api_hash
     )
 
     catcher_client_config = app_config.clients.catcher_client
     catcher_client = TelegramClient(
-        session=Path('./sessions', proxy_client_config.session_name),
+        session=os.path.abspath(Path('sessions', proxy_client_config.session_name)),
         api_id=catcher_client_config.api_id,
         api_hash=catcher_client_config.api_hash
     )
