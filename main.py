@@ -11,7 +11,7 @@ from logger.logger import setup_logger
 
 
 async def auth_wrap(client: TelegramClient, phone: str):
-    await client.start(phone, None if await client.is_user_authorized() else input(f'Enter verification code ({phone})'))
+    await client.start(phone, None if await client.is_user_authorized() else print(f'Enter verification code ({phone})'))
 
 
 async def run(app_config: AppConfig):
