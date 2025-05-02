@@ -1,8 +1,6 @@
 FROM python:3.13-alpine
 
-RUN useradd -m -u 1000 send-catcher && \
-    mkdir -p /app && \
-    chown send-catcher:send-catcher /app
+RUN mkdir -p /app &&
 
 WORKDIR /app
 
