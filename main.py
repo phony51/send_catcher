@@ -24,7 +24,7 @@ async def run(app_config: AppConfig):
 
     catcher_client_config = app_config.clients.catcher_client
     catcher_client = TelegramClient(
-        session=os.path.abspath(Path('sessions', proxy_client_config.session_name)),
+        session=os.path.abspath(Path('sessions', catcher_client_config.session_name)),
         api_id=catcher_client_config.api_id,
         api_hash=catcher_client_config.api_hash
     )
