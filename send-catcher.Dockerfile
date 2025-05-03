@@ -4,5 +4,5 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 COPY . /app
-RUN chmod -R a+rwx /app
+RUN chmod -R 777 /app
 ENTRYPOINT [ "python", "main.py" ]
