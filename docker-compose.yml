@@ -3,11 +3,12 @@ services:
     build: 
       context: .
       dockerfile: send-catcher.Dockerfile
+      args:
+        - stdin_open
+        - tty
     restart: unless-stopped
     volumes:
       - ./sessions:/app/sessions
       - ./configuration.json:/app/configuration.json:ro
       - ./logs:/app/logs
     user: "1000:1000"
-    tty: true
-    stdin_open: true

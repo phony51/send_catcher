@@ -10,10 +10,3 @@ class AppConfig(CamelCaseBaseModel):
     clients: ClientsConfig
     crypto_bot: CryptoBotConfig
     logger: LoggerConfig
-
-
-def load_config(path: Path):
-    with open(path, 'r') as configuration:
-        app_config = AppConfig.model_validate_json(configuration.read())
-    logging.getLogger(__name__).info('Configuration loaded')
-    return app_config
