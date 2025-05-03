@@ -10,8 +10,8 @@ from utils import get_clients, load_config
 
 async def run(app_config: AppConfig):
     setup_logger(app_config.logger)
-    proxy_client_config = app_config.clients.proxy_client
-    catcher_client_config = app_config.clients.catcher_client
+    proxy_client_config = app_config.clients.proxy
+    catcher_client_config = app_config.clients.catcher
     proxy_client, catcher_client = get_clients(
         proxy_client_config, catcher_client_config)
     try:
