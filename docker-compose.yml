@@ -3,9 +3,6 @@ services:
     build: 
       context: .
       dockerfile: send-catcher.Dockerfile
-      args:
-        - stdin_open
-        - tty
     restart: unless-stopped
     volumes:
       - ./sessions:/app/sessions

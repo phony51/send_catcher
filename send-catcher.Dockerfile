@@ -5,5 +5,4 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 COPY . /app
 RUN chmod -R 777 /app
-RUN ./setup.sh
 ENTRYPOINT [ "python", "main.py" ]
