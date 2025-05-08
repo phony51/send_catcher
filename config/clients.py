@@ -24,7 +24,7 @@ class ClientConfig(CamelCaseBaseModel):
             raise ValueError('Not authorized')
         
         try:
-            async with await self.client.start(password=bypass_enter, code_callback=bypass_enter): 
+            async with await self.client.start(phone=bypass_enter, password=bypass_enter, code_callback=bypass_enter): 
                 return True
         except ValueError as e:
             return False
