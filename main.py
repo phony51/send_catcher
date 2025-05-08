@@ -2,21 +2,16 @@ import asyncio
 import logging
 import re
 from config.app import AppConfig
-from core.executors.catcher import CatcherExecutor, ChequeProcessor
-from core.executors.proxy import ProxyExecutor
 from logger.logger import setup_logger
 from utils import get_clients, load_config
 
 
 async def run(app_config: AppConfig):
     setup_logger(app_config.logger)
-    proxy_client_config = app_config.clients.proxy
-    catcher_client_config = app_config.clients.catcher
-    proxy_client, catcher_client = get_clients(
-        proxy_client_config, catcher_client_config)
+    
     try:
         await proxy_client.start()
-        await catcher_client.start()
+        await .start()
         logging.debug('Authorization successfully')
         cheque_processor = ChequeProcessor(
             domain=app_config.crypto_bot.domain,

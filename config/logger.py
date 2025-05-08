@@ -18,11 +18,11 @@ log_level_mapping = {
 
 
 class LoggerConfig(CamelCaseBaseModel):
-    level: LogLevel
-    max_bak: int
-    max_size_kb: int
-    path: Path
-
+    level: LogLevel = LogLevel.FATAL
+    max_bak: int = 0
+    max_size_kb: int = 1024
+    filename: str = 'app.log'
+    
     @property
     def mapped_level(self):
         return log_level_mapping[self.level]

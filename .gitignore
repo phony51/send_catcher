@@ -4,4 +4,5 @@ sessions/
 logs/
 venv/
 tests/
-configuration.json
+configuration.*.json
+.env
