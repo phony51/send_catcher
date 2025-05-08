@@ -18,11 +18,21 @@ class ClientConfig(CamelCaseBaseModel):
             api_id=self.api_id,
             api_hash=self.api_hash
         )
+        
+    async def is_authorized(self):
+        def bypass_enter():
+            raise ValueError('Not authorized')
+        
+        try:
+            async with await self.client.start(password=bypass_enter, code_callback=bypass_enter): 
+                return True
+        except ValueError as e:
+            return False
+        
 
     async def create_client_session(self, code_callback: Callable[[], str]):
-        if not self.client.is_user_authorized():
-            await self.client.start(self.phone, code_callback=code_callback)
-            await self.client.disconnect()
+        if not self.is_authorized():
+            async with await self.client.start(self.phone, code_callback=code_callback): ...
 
 
 class ClientsConfig(CamelCaseBaseModel):

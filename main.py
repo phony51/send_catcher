@@ -2,36 +2,31 @@ import asyncio
 import logging
 import re
 from config.app import AppConfig
+from core.executors.catcher import CatcherLoop, ChequeProcessor
 from logger.logger import setup_logger
-from utils import get_clients, load_config
+from utils import get_clients_pool
 
 
 async def run(app_config: AppConfig):
     setup_logger(app_config.logger)
     
+    if not await app_config.clients.catcher.is_authorized():
+        raise ValueError('Catcher client is not authorized')
+    
+    cheque_processor = ChequeProcessor(
+        domain=app_config.cryptobot.domain,
+        bot_id=app_config.cryptobot.id,
+        clients_pool=await get_clients_pool(app_config.clients.proxy),
+        cheque_id_regex=re.compile(r'CQ[A-Za-z0-9]{10}')
+    )
+    logging.debug('Authorization successfully')
+    
     try:
-        await proxy_client.start()
-        await .start()
-        logging.debug('Authorization successfully')
-        cheque_processor = ChequeProcessor(
-            domain=app_config.crypto_bot.domain,
-            bot_id=app_config.crypto_bot.id,
-            sender=proxy_client,
-            cheque_id_regex=re.compile(r'CQ[A-Za-z0-9]{10}')
-        )
-        logging.info('Loop started')
-        await asyncio.gather(
-            ProxyExecutor().execute_by(proxy_client),
-            CatcherExecutor(cheque_processor).execute_by(catcher_client)
-        )
+        await CatcherLoop(app_config.clients.catcher.client, cheque_processor).run()
     finally:
         logging.info('Disconnected')
-        await asyncio.gather(
-            proxy_client.disconnect(),
-            catcher_client.disconnect()
-        )
 
 if __name__ == '__main__':
     asyncio.run(run(
-        load_config()
+        AppConfig.load_config()
     ))

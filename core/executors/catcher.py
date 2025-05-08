@@ -3,21 +3,6 @@ import re
 from telethon import TelegramClient, events, errors
 from core.clients_pool import ClientsPool
 from telethon.tl.custom.message import Message
-# import timeit
-# from functools import wraps
-
-
-# def measure_time(func):
-#     @wraps(func)
-#     async def async_wrapper(*args, **kwargs):
-#         start_time = timeit.default_timer()
-#         try:
-#             return await func(*args, **kwargs)
-#         finally:
-#             elapsed = (timeit.default_timer() - start_time)   # в миллисекундах
-#             print(f"⏱ {func.__name__} took {elapsed:.2f}us")
-
-    # return async_wrapper
 
 
 class ChequeProcessor:
@@ -29,33 +14,43 @@ class ChequeProcessor:
         self.cheque_id_regex = cheque_id_regex
         self._logger = logging.getLogger(__name__)
 
+    async def ready(self):
+        await self._clients_pool.ready()
+        
     async def _activate_cheque(self, cheque_id: str):
-        coro = self._clients_pool.current_client.send_message(self.domain, f'/start {cheque_id}')
+        text = f'/start {cheque_id}'
         try:
-            await coro
+            await self._clients_pool.current_client.send_message(self.domain, text)
         except errors.FloodWaitError as fwe:
-            self._clients_pool.switch()
-            self._logger.warning(f'Client {self._clients_pool.current_client._phone} has cooldown for {fwe.seconds} seconds. Switching...')
-            await coro
+            prev_api_id = self._clients_pool.current_client.api_id
+            await self._clients_pool.switch()
+            self._logger.warning(
+                f'Client {prev_api_id} has cooldown for {fwe.seconds} seconds. Switched to {self._clients_pool.current_client.api_id}')
+            await self._clients_pool.current_client.send_message(self.domain, text)
         finally:
             self._logger.info('Activating cheque...')
-        
 
-    def filter_(self, msg: Message) -> bool: 
+    def filter_(self, msg: Message) -> bool:
         return msg.via_bot_id == self.bot_id \
-                and msg.buttons is not None \
-                and (url := msg.buttons[0][0].url) \
-                and url[23:25] == 'CQ'
-        
+            and msg.buttons is not None \
+            and (url := msg.buttons[0][0].url) \
+            and url[23:25] == 'CQ'
+
     async def handler(self, msg: Message):
-        await self._activate_cheque(msg.raw_text[23:])
+        await self._activate_cheque(msg.buttons[0][0].url[23:])
 
 
 class CatcherLoop:
-    def __init__(self, cheque_processor: ChequeProcessor):
+    def __init__(self, client: TelegramClient, cheque_processor: ChequeProcessor):
+        self.client = client
         self.cheque_processor = cheque_processor
-        
-    async def run(self, catcher_client: TelegramClient):
-        catcher_client.add_event_handler(self.cheque_processor.handler, events.MessageEdited(func=self.cheque_processor.filter_))
-        catcher_client.add_event_handler(self.cheque_processor.handler, events.NewMessage(func=self.cheque_processor.filter_))
-        await catcher_client.run_until_disconnected()
+
+    async def run(self):
+        logging.info('Loop started')
+        await self.cheque_processor.ready()
+        async with await self.client.start():
+            self.client.add_event_handler(self.cheque_processor.handler, events.MessageEdited(
+                func=self.cheque_processor.filter_))
+            self.client.add_event_handler(self.cheque_processor.handler, events.NewMessage(
+                func=self.cheque_processor.filter_))
+            await self.client.run_until_disconnected()

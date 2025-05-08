@@ -13,6 +13,7 @@ class AppConfig(CamelCaseBaseModel):
     LOGS_DIR: ClassVar[str] = 'logs'
     
     clients: ClientsConfig = ClientsConfig()
+    cryptobot: CryptoBotConfig = CryptoBotConfig()
     logger: LoggerConfig = LoggerConfig()
     
     def init_enviroment(self):
