@@ -18,8 +18,8 @@ log_level_mapping = {
 
 
 class LoggerConfig(CamelCaseBaseModel):
-    level: LogLevel = LogLevel.FATAL
-    max_bak: int = 0
+    level: LogLevel = LogLevel.INFO
+    max_bak: int = 1
     max_size_kb: int = 1024
     filename: str = 'app.log'
     
