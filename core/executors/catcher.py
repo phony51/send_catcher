@@ -32,8 +32,8 @@ class ChequeProcessor:
 
     def filter_(self, msg: Message) -> bool:
         return msg.via_bot_id is not None \
-            and msg.via_bot_id == self.bot_id \
             and msg.buttons is not None \
+            and msg.via_bot_id == self.bot_id \
             and (url := msg.buttons[0][0].url) \
             and url[23:25] == 'CQ'
 
