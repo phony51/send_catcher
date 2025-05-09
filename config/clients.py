@@ -1,3 +1,4 @@
+from functools import cached_property
 import os
 from pathlib import Path
 from typing import Callable, ClassVar, Optional
@@ -11,12 +12,17 @@ class ClientConfig(CamelCaseBaseModel):
     phone: str
     session_path: Path
 
-    @property
+    @cached_property
     def client(self):
         return TelegramClient(
             session=self.session_path,
             api_id=self.api_id,
-            api_hash=self.api_hash
+            api_hash=self.api_hash,
+            system_version="4.16.30-vxCUSTOM",
+            system_lang_code='en',
+            device_model='Redmi Redmi Note 11',
+            app_version='Telegram Web'
+            
         )
         
     async def is_authorized(self):
