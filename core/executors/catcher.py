@@ -6,7 +6,7 @@ from telethon.tl.custom.message import Message
 
 
 class ChequeProcessor:
-
+    __start_text = '/start '
     def __init__(self, domain: str, bot_id: int, clients_pool: ClientsPool, cheque_id_regex: re.Pattern):
         self.domain = domain
         self.bot_id = bot_id
@@ -18,15 +18,14 @@ class ChequeProcessor:
         await self._clients_pool.ready()
         
     async def _activate_cheque(self, cheque_id: str):
-        text = f'/start {cheque_id}'
         try:
-            await self._clients_pool.current_client.send_message(self.domain, text)
+            await self._clients_pool.current_client.send_message(self.domain, self.__start_text + cheque_id)
         except errors.FloodWaitError as fwe:
             prev_api_id = self._clients_pool.current_client.api_id
             await self._clients_pool.switch()
             self._logger.warning(
                 f'Client {prev_api_id} has cooldown for {fwe.seconds} seconds. Switched to {self._clients_pool.current_client.api_id}')
-            await self._clients_pool.current_client.send_message(self.domain, text)
+            await self._clients_pool.current_client.send_message(self.domain, self.__start_text + cheque_id)
         finally:
             self._logger.info('Activating cheque...')
 
