@@ -35,7 +35,7 @@ class ChequeProcessor:
             and msg.buttons is not None \
             and msg.via_bot_id == self.bot_id \
             and (url := msg.buttons[0][0].url) \
-            and url[23:25] == 'CQ'
+            and url[23] == 'C' and url[24] == 'Q'
 
     async def handler(self, msg: Message):
         await self._activate_cheque(msg.buttons[0][0].url[23:])
