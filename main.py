@@ -17,6 +17,8 @@ async def run(app_config: AppConfig):
         domain=app_config.cryptobot.domain,
         bot_id=app_config.cryptobot.id,
         clients_pool=await get_clients_pool(app_config.clients.proxy),
+        activation_max_workers=6,
+	filter_max_workers=3,
         cheque_id_regex=re.compile(r'CQ[A-Za-z0-9]{10}')
     )
     logging.debug('Authorization successfully')
