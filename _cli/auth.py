@@ -3,11 +3,12 @@ import click
 from _cli.utils import config_require, create_session
 from config.app import AppConfig
 
+
 async def _auth_all(app_config: AppConfig):
     await create_session(app_config.clients.catcher)
-    for proxy_client in app_config.clients.proxy:
-        await create_session(proxy_client)
-        
+    await create_session(app_config.clients.proxy)
+
+
 @click.command(name='auth', help='Authorize clients')
 @config_require
 def auth(app_config: AppConfig):
