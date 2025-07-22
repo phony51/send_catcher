@@ -20,6 +20,7 @@ class ClientConfig(CamelCaseBaseModel):
             api_id=self.api_id,
             api_hash=self.api_hash,
             connection=ConnectionTcpAbridged,
+
             system_version="4.16.30-vxCUSTOM",
             system_lang_code='en',
             device_model='Redmi Redmi Note 11',
@@ -33,17 +34,31 @@ class ClientConfig(CamelCaseBaseModel):
         try:
             async with await self.client.start(phone=bypass_enter, password=bypass_enter, code_callback=bypass_enter):
                 return True
-        except ValueError as e:
+        except ValueError:
             return False
 
     async def create_client_session(self, code_callback: Callable[[], str]):
         if not self.is_authorized():
-            async with await self.client.start(self.phone, code_callback=code_callback): ...
+            async with await self.client.start(self.phone, code_callback=code_callback):
+                ...
+
+
+class ProxyClientConfig(ClientConfig):
+    @cached_property
+    def client(self):
+        return TelegramClient(
+            session=self.session_path,
+            api_id=self.api_id,
+            api_hash=self.api_hash,
+            connection=ConnectionTcpAbridged,
+            receive_updates=False,
+
+        )
 
 
 class ClientsConfig(CamelCaseBaseModel):
     catcher: Optional[ClientConfig] = None
-    proxy: Optional[ClientConfig] = None
+    proxy: Optional[ProxyClientConfig] = None
     CATCHER_SESSION_FILENAME: ClassVar[str] = 'catcher'
     PROXY_SESSION_FILENAME: ClassVar[str] = 'proxy'
 
@@ -63,7 +78,7 @@ class ClientsConfig(CamelCaseBaseModel):
         else:
             raise ValueError('Catcher client already exists')
 
-    def add_proxy_client(self, client: ClientConfig, hard: bool = False):
+    def add_proxy_client(self, client: ProxyClientConfig, hard: bool = False):
         if self.proxy is None or hard:
             self.proxy = client
         else:
