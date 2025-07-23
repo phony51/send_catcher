@@ -6,7 +6,6 @@ from telethon import TelegramClient
 from config.base import CamelCaseBaseModel
 from telethon.network import ConnectionTcpAbridged
 
-from config.dc import DC
 
 SESSIONS_DIR = 'sessions'
 
@@ -17,11 +16,10 @@ class Client(CamelCaseBaseModel):
     api_hash: str
     phone: str
     password: Optional[str] = None
-    dc: Optional[DC] = None
 
     @cached_property
     def client(self):
-        cl = TelegramClient(
+        return TelegramClient(
             session=self._session_path,
             api_id=self.api_id,
             api_hash=self.api_hash,
@@ -31,9 +29,6 @@ class Client(CamelCaseBaseModel):
             system_lang_code='en',
             connection=ConnectionTcpAbridged
         )
-        if self.dc is not None:
-            cl.session.set_dc(self.dc.id, self.dc.ip, self.dc.port)
-        return cl
 
 
 class CatcherClient(Client):

@@ -23,7 +23,6 @@ async def run(app_config: AppConfig):
         proxy_config.password
     )
 
-    await proxy_client.start()
     cryptobot = Cryptobot(
         ent=await proxy_client.get_entity(CRYPTOBOT_USERNAME),
         client=proxy_client

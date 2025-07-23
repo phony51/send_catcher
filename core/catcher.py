@@ -36,6 +36,6 @@ class Catcher:
 
     async def run(self):
         logging.info('Catcher started')
-        async with await self.client.start():
+        async with self.client:
             self.client.on(events.Raw())(self._cryptobot.handler)
             await self.client.run_until_disconnected()
