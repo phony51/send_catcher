@@ -1,4 +1,6 @@
+import asyncio
 import logging
+
 from telethon import TelegramClient, events
 from telethon.tl import types
 from telethon.tl.functions.messages import SendMessageRequest
@@ -19,6 +21,7 @@ class Cryptobot:
              update.CONSTRUCTOR_ID == types.UpdateNewMessage.CONSTRUCTOR_ID or
              update.CONSTRUCTOR_ID == types.UpdateEditMessage.CONSTRUCTOR_ID) and
             update.message.reply_markup is not None
+            and update.message.reply_markup.CONSTRUCTOR_ID != types.ReplyKeyboardHide.CONSTRUCTOR_ID
             and update.message.reply_markup.rows[0].buttons[
                 0].CONSTRUCTOR_ID == types.KeyboardButtonUrl.CONSTRUCTOR_ID
             and len(update.message.reply_markup.rows[0].buttons[0].url) == 35) \
@@ -34,8 +37,15 @@ class Catcher:
         self.client = client
         self._cryptobot = cryptobot
 
+    async def catch_up_regular(self):
+        while self.client.is_connected():
+            await self.client.catch_up()
+            await asyncio.sleep(15)
+            print('catch upping')
+
     async def run(self):
         logging.info('Catcher started')
         async with self.client:
             self.client.on(events.Raw())(self._cryptobot.handler)
+            await self.catch_up_regular()
             await self.client.run_until_disconnected()
