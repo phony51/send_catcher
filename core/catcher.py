@@ -1,15 +1,8 @@
 import logging
 from telethon import TelegramClient, events
 from telethon.tl import types
-from telethon.tl.custom.message import Message
 from telethon.tl.functions.messages import SendMessageRequest
 from telethon.tl.types import User, InputPeerUser
-
-
-def filter_(msg: Message):
-    return msg.buttons is not None \
-        and msg.buttons[0][0].url is not None \
-        and msg.buttons[0][0].url[23:25] == 'CQ'
 
 
 class Cryptobot:

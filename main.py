@@ -1,10 +1,13 @@
 import asyncio
 import logging
-
-from telethon import events
+import platform
 
 from config.app import AppConfig, CRYPTOBOT_USERNAME, CONFIG_PATH
 from core.catcher import Catcher, Cryptobot
+
+if platform.system() == 'Linux':
+    import uvloop
+    uvloop.install()
 
 
 async def run(app_config: AppConfig):

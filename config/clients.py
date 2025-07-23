@@ -29,7 +29,6 @@ class Client(CamelCaseBaseModel):
             system_version='18.5',
             lang_code='en',
             system_lang_code='en',
-
             connection=ConnectionTcpAbridged
         )
         if self.dc is not None:
