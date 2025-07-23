@@ -25,6 +25,11 @@ class Client(CamelCaseBaseModel):
             session=self._session_path,
             api_id=self.api_id,
             api_hash=self.api_hash,
+            device_model="iPhone 12 mini",
+            system_version='18.5',
+            lang_code='en',
+            system_lang_code='en',
+
             connection=ConnectionTcpAbridged
         )
         if self.dc is not None:
