@@ -2,8 +2,7 @@
 .vscode/
 .idea/
 sessions/
-logs/
 venv/
+.venv/
 tests/
-configuration.*.json
-.env
+configuration.json
