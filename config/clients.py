@@ -52,7 +52,6 @@ class ProxyClientConfig(ClientConfig):
             api_hash=self.api_hash,
             connection=ConnectionTcpAbridged,
             receive_updates=False,
-
         )
 
 
