@@ -37,15 +37,26 @@ class Catcher:
         self.client = client
         self._cryptobot = cryptobot
 
-    async def catch_up_regular(self):
-        while self.client.is_connected():
+    async def catch_up_task(self):
+        while True:
+            if self.client.disconnected:
+                await asyncio.sleep(5)
+            await asyncio.sleep(60)
             await self.client.catch_up()
-            await asyncio.sleep(15)
-            print('catch upping')
+            print('catch upped')
+
+    async def reconnect_task(self):
+        while True:
+            await asyncio.sleep(1800)
+            await self.client.disconnect()
+            await self.client.connect()
+            await self.client.get_me()
+            print('reconnected')
 
     async def run(self):
         logging.info('Catcher started')
         async with self.client:
             self.client.on(events.Raw())(self._cryptobot.handler)
-            await self.catch_up_regular()
-            await self.client.run_until_disconnected()
+            await asyncio.gather(self.client.run_until_disconnected(),
+                                 self.catch_up_task(),
+                                 self.reconnect_task())
